@@ -1,3 +1,4 @@
+import 'package:chama_app/screens/home_screen.dart';
 import 'package:chama_app/screens/login_screen.dart';
 import 'package:chama_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Chama',
         theme: ThemeData(
           primaryColor: Color.fromRGBO(71, 33, 153, 1),
           accentColor: Color.fromRGBO(251, 241, 10, 1),
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
           '/': (ctx) => LoginScreen(),
           LoginScreen.routeName: (ctx) => LoginScreen(),
           RegisterScreen.routeName: (ctx) => RegisterScreen(),
+          HomeScreen.routeName: (ctx) => HomeScreen(),
         });
   }
 }

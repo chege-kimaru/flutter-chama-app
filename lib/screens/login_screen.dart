@@ -1,3 +1,4 @@
+import 'package:chama_app/screens/home_screen.dart';
 import 'package:chama_app/screens/register_screen.dart';
 import 'package:chama_app/widgets/custom_button.dart';
 import 'package:chama_app/widgets/custom_input.dart';
@@ -64,7 +65,10 @@ class LoginScreen extends StatelessWidget {
                         ),
                         CustomButton(
                           label: 'Login',
-                          handler: null,
+                          handler: () {
+                            Navigator.of(context)
+                                .pushNamed(HomeScreen.routeName);
+                          },
                         ),
                         SizedBox(
                           height: 24,
