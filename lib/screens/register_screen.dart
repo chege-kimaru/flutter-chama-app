@@ -1,10 +1,10 @@
-import 'package:chama_app/screens/register_screen.dart';
+import 'package:chama_app/screens/login_screen.dart';
 import 'package:chama_app/widgets/custom_button.dart';
 import 'package:chama_app/widgets/custom_input.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
-  static const routeName = '/login';
+class RegisterScreen extends StatelessWidget {
+  static const routeName = '/register';
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Welcome Back',
+                    'Sign Up',
                     style: TextStyle(
                         fontFamily: 'ModernAntiqua',
                         fontSize: 32,
@@ -40,7 +40,21 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         CustomInput(
-                          hintText: 'Email',
+                          hintText: 'Full Name',
+                          obscureText: true,
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        CustomInput(
+                          hintText: 'Phone Number',
+                          obscureText: true,
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        CustomInput(
+                          hintText: 'Email Address',
                           obscureText: true,
                         ),
                         SizedBox(
@@ -51,45 +65,40 @@ class LoginScreen extends StatelessWidget {
                           obscureText: true,
                         ),
                         SizedBox(
-                          height: 24,
+                          height: 16,
                         ),
-                        Text(
-                          'Forgot Password?',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
+                        CustomInput(
+                          hintText: 'Confirm Password',
+                          obscureText: true,
                         ),
                         SizedBox(
                           height: 24,
                         ),
                         CustomButton(
-                          label: 'Login',
-                          handler: null,
+                          label: 'Register',
+                          handler: () {
+                            Navigator.of(context)
+                                .pushNamed(LoginScreen.routeName);
+                          },
                         ),
                         SizedBox(
                           height: 24,
                         ),
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.white),
-                          child: Center(
-                            child: Text(
-                              'OR',
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed(LoginScreen.routeName);
+                          },
+                          child: Text(
+                            'Have an account? Login',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 24,
-                        ),
-                        CustomButton(
-                            label: 'Sign Up',
-                            handler: () {
-                              Navigator.of(context)
-                                  .pushNamed(RegisterScreen.routeName);
-                            })
                       ],
                     ),
                   )
