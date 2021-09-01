@@ -1,3 +1,5 @@
+import 'package:chama_app/widgets/custom_button.dart';
+import 'package:chama_app/widgets/custom_input.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -36,36 +38,15 @@ class LoginScreen extends StatelessWidget {
                         color: Theme.of(context).accentColor),
                     child: Column(
                       children: [
-                        TextField(
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(16),
-                              hintText: 'Username',
-                              hintStyle: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )),
+                        CustomInput(
+                          hintText: 'Username',
+                          obscureText: true,
                         ),
                         SizedBox(
                           height: 16,
                         ),
-                        TextField(
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(16),
-                              hintText: 'Password',
-                              hintStyle: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )),
+                        CustomInput(
+                          hintText: 'Password',
                           obscureText: true,
                         ),
                         SizedBox(
@@ -80,35 +61,9 @@ class LoginScreen extends StatelessWidget {
                         SizedBox(
                           height: 24,
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48,
-                          child: TextButton(
-                            // style: ButtonStyle(
-                            //   shape:
-                            //       MaterialStateProperty.all<RoundedRectangleBorder>(
-                            //     RoundedRectangleBorder(
-                            //       borderRadius: BorderRadius.circular(18.0),
-                            //     ),
-                            //   ),
-                            //   backgroundColor: MaterialStateProperty.all<Color>(
-                            //       Theme.of(context).primaryColor),
-                            // ),
-                            style: TextButton.styleFrom(
-                                shape: new RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(18.0),
-                                ),
-                                backgroundColor:
-                                    Theme.of(context).primaryColor),
-                            child: Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 18,
-                              ),
-                            ),
-                            onPressed: () {},
-                          ),
+                        CustomButton(
+                          label: 'Login',
+                          handler: null,
                         ),
                         SizedBox(
                           height: 24,
@@ -128,26 +83,7 @@ class LoginScreen extends StatelessWidget {
                         SizedBox(
                           height: 24,
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                                shape: new RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(18.0),
-                                ),
-                                backgroundColor:
-                                    Theme.of(context).primaryColor),
-                            child: Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                                fontSize: 18,
-                              ),
-                            ),
-                            onPressed: () {},
-                          ),
-                        ),
+                        CustomButton(label: 'Sign Up', handler: null)
                       ],
                     ),
                   )
