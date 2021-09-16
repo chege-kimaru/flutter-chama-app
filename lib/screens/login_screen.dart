@@ -41,8 +41,8 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         CustomInput(
-                          hintText: 'Email',
-                          obscureText: true,
+                          hintText: 'Phone Number',
+                          obscureText: false,
                         ),
                         SizedBox(
                           height: 16,

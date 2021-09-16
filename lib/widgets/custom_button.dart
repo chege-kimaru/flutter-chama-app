@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final String label;
   final Function handler;
+  final FocusNode focusNode;
+  final bool loading;
 
-  const CustomButton({@required this.label, @required this.handler});
+  const CustomButton(
+      {@required this.label,
+      @required this.handler,
+      this.focusNode,
+      this.loading});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +33,17 @@ class CustomButton extends StatelessWidget {
               borderRadius: new BorderRadius.circular(18.0),
             ),
             backgroundColor: Theme.of(context).primaryColor),
-        child: Text(
-          this.label,
-          style: TextStyle(
-            color: Theme.of(context).accentColor,
-            fontSize: 18,
-          ),
-        ),
+        child: loading
+            ? CircularProgressIndicator()
+            : Text(
+                this.label,
+                style: TextStyle(
+                  color: Theme.of(context).accentColor,
+                  fontSize: 18,
+                ),
+              ),
         onPressed: this.handler,
+        focusNode: this.focusNode,
       ),
     );
   }
