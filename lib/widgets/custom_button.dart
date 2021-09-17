@@ -10,7 +10,7 @@ class CustomButton extends StatelessWidget {
       {@required this.label,
       @required this.handler,
       this.focusNode,
-      this.loading});
+      this.loading = false});
 
   @override
   Widget build(BuildContext context) {

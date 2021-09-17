@@ -1,6 +1,7 @@
 import 'package:chama_app/screens/home_screen.dart';
 import 'package:chama_app/screens/login_screen.dart';
 import 'package:chama_app/screens/register_screen.dart';
+import 'package:chama_app/screens/verify_phone_screen.dart';
 import 'package:chama_app/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
             LoginScreen.routeName: (ctx) => LoginScreen(),
             RegisterScreen.routeName: (ctx) => RegisterScreen(),
             HomeScreen.routeName: (ctx) => HomeScreen(),
+            VerifyPhoneScreen.routeName: (ctx) => VerifyPhoneScreen(),
           }),
     );
   }

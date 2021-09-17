@@ -1,5 +1,6 @@
 import 'package:chama_app/models/user.dart';
 import 'package:chama_app/screens/login_screen.dart';
+import 'package:chama_app/screens/verify_phone_screen.dart';
 import 'package:chama_app/services/auth.dart';
 import 'package:chama_app/widgets/custom_button.dart';
 import 'package:chama_app/widgets/custom_input.dart';
@@ -64,6 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Text('Okay'))
                 ],
               ));
+      Navigator.of(context).pushNamed(VerifyPhoneScreen.routeName);
     } catch (error) {
       print(error);
       showDialog(
@@ -87,8 +89,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // }
     setState(() => _isLoading = false);
     // Navigator.of(context).pop();
-
-    // Navigator.of(context).pushNamed(LoginScreen.routeName);
   }
 
   @override
@@ -143,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             focusNode: _nameFocusNode,
                             onSaved: (newValue) {
                               _user = User(
-                                name: '',
+                                name: newValue,
                                 email: _user.email,
                                 phone: _user.phone,
                                 password: _user.password,
@@ -281,10 +281,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                           ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(VerifyPhoneScreen.routeName);
+                            },
+                            child: Text(
+                              'Verify Phone?',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
                 ],
               ),
             ),

@@ -9,6 +9,7 @@ class CustomInput extends StatelessWidget {
   final FocusNode focusNode;
   final TextEditingController controller;
   final Function onSaved;
+  final TextInputType keyboardType;
 
   const CustomInput({
     @required this.hintText,
@@ -16,9 +17,10 @@ class CustomInput extends StatelessWidget {
     this.onFieldSubmitted,
     this.validator,
     this.focusNode,
-    this.obscureText,
+    this.obscureText = false,
     this.controller,
     this.onSaved,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -44,6 +46,7 @@ class CustomInput extends StatelessWidget {
       focusNode: this.focusNode,
       controller: this.controller,
       onSaved: this.onSaved,
+      keyboardType: this.keyboardType,
     );
   }
 }
