@@ -83,12 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ));
     }
-    //  finally {
-    //   setState(() => _isLoading = false);
-    //   Navigator.of(context).pop();
-    // }
     setState(() => _isLoading = false);
-    // Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   @override

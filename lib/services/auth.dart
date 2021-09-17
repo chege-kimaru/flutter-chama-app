@@ -20,6 +20,20 @@ class VerifyPhoneDto {
   }
 }
 
+class LoginDto {
+  final String phone;
+  final String password;
+
+  LoginDto({@required this.phone, @required this.password});
+
+  static Map<String, dynamic> toJson(LoginDto dto) {
+    return {
+      'phone': dto.phone,
+      'password': dto.password,
+    };
+  }
+}
+
 class Auth extends ChangeNotifier {
   String phoneToVerify;
 
@@ -82,6 +96,30 @@ class Auth extends ChangeNotifier {
         // success
       } else {
         throw apiErrorHandler('Verification failed', responseData['message']);
+      }
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+  }
+
+  Future<User> login(LoginDto loginDto) async {
+    try {
+      final url = "$BASE_URL/auth/login";
+      final response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(LoginDto.toJson(loginDto)));
+      final responseData = json.decode(response.body);
+      print(responseData);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // success
+        // save token
+        return User.fromJson(responseData['user']);
+      } else {
+        throw apiErrorHandler('Registration failed', responseData['message']);
       }
     } catch (error) {
       print(error);

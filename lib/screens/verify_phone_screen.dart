@@ -77,6 +77,7 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               ));
     }
     setState(() => _isLoading = false);
+    Navigator.of(context).pop();
   }
 
   Future<void> _resendVerification() async {
@@ -123,6 +124,7 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               ));
     }
     setState(() => _isResendLoading = false);
+    Navigator.of(context).pop();
   }
 
   @override
