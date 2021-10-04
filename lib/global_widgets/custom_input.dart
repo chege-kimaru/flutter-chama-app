@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 class CustomInput extends StatelessWidget {
   final String hintText;
   final bool obscureText;
-  final TextInputAction textInputAction;
-  final Function onFieldSubmitted;
-  final Function validator;
-  final FocusNode focusNode;
-  final TextEditingController controller;
-  final Function onSaved;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
+  final String? Function(String?)? validator;
+  final FocusNode? focusNode;
+  final TextEditingController? controller;
+  final void Function(String?)? onSaved;
   final TextInputType keyboardType;
 
   const CustomInput({
-    @required this.hintText,
+    @required required this.hintText,
     this.textInputAction,
     this.onFieldSubmitted,
     this.validator,
@@ -39,7 +39,7 @@ class CustomInput extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
       ),
-      obscureText: this.obscureText ?? false,
+      obscureText: this.obscureText,
       textInputAction: this.textInputAction,
       onFieldSubmitted: this.onFieldSubmitted,
       validator: this.validator,

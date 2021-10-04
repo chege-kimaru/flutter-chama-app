@@ -1,9 +1,9 @@
 import 'package:chama_app/models/user.dart';
-import 'package:chama_app/screens/login_screen.dart';
-import 'package:chama_app/screens/verify_phone_screen.dart';
+import 'package:chama_app/modules/auth/screens/login_screen.dart';
+import 'package:chama_app/modules/auth/screens/verify_phone_screen.dart';
 import 'package:chama_app/services/auth.dart';
-import 'package:chama_app/widgets/custom_button.dart';
-import 'package:chama_app/widgets/custom_input.dart';
+import 'package:chama_app/global_widgets/custom_button.dart';
+import 'package:chama_app/global_widgets/custom_input.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,9 +42,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    final isValid = _form.currentState.validate();
+    final isValid = _form.currentState!.validate();
     if (!isValid || _isLoading) return;
-    _form.currentState.save();
+    _form.currentState!.save();
     setState(() => _isLoading = true);
     try {
       User registeredUser =
@@ -74,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 title: Text('An error occurred'),
                 content: Text(error.toString()),
                 actions: [
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         // close the alert dialog
                         Navigator.of(ctx).pop();
@@ -84,7 +84,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ));
     }
     setState(() => _isLoading = false);
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   @override
@@ -131,7 +131,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .requestFocus(_phoneFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter your name';
                               }
                               return null;
@@ -158,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .requestFocus(_emailFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter your phone number';
                               }
                               return null;
@@ -185,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .requestFocus(_passwordFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter your email';
                               }
                               return null;
@@ -212,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .requestFocus(_confirmPasswordFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter a password';
                               }
                               return null;
@@ -240,7 +240,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .requestFocus(_registerFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please confirm your password';
                               }
                               if (value != _passwordController.text) {

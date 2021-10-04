@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-final customInputDecoration = ({BuildContext context, String hintText}) {
+final customInputDecoration =
+    ({required BuildContext context, required String hintText}) {
   InputDecoration(
     contentPadding: EdgeInsets.all(16),
     hintText: hintText,

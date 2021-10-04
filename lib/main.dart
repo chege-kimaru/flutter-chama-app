@@ -1,7 +1,9 @@
-import 'package:chama_app/screens/home_screen.dart';
-import 'package:chama_app/screens/login_screen.dart';
-import 'package:chama_app/screens/register_screen.dart';
-import 'package:chama_app/screens/verify_phone_screen.dart';
+import 'package:chama_app/modules/auth/screens/forgot_pass_screen.dart';
+import 'package:chama_app/modules/home/screens/home_screen.dart';
+import 'package:chama_app/modules/auth/screens/login_screen.dart';
+import 'package:chama_app/modules/auth/screens/register_screen.dart';
+import 'package:chama_app/modules/auth/screens/reset_pass_screen.dart';
+import 'package:chama_app/modules/auth/screens/verify_phone_screen.dart';
 import 'package:chama_app/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
             RegisterScreen.routeName: (ctx) => RegisterScreen(),
             HomeScreen.routeName: (ctx) => HomeScreen(),
             VerifyPhoneScreen.routeName: (ctx) => VerifyPhoneScreen(),
+            ForgotPassScreen.routeName: (ctx) => ForgotPassScreen(),
+            ResetPassScreen.routeName: (ctx) => ResetPassScreen(),
           }),
     );
   }

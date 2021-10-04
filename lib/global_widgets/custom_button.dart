@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String label;
-  final Function handler;
-  final FocusNode focusNode;
+  final void Function() handler;
+  final FocusNode? focusNode;
   final bool loading;
 
   const CustomButton(
-      {@required this.label,
-      @required this.handler,
+      {@required required this.label,
+      @required required this.handler,
       this.focusNode,
       this.loading = false});
 

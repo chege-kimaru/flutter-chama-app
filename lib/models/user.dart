@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 
 class User {
-  final String name;
-  final String email;
-  final String phone;
-  final String password;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? name;
+  final String? email;
+  final String? phone;
+  final String? password;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   User({
     @required this.name,

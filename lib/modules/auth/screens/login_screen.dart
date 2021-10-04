@@ -1,9 +1,10 @@
+import 'package:chama_app/global_widgets/custom_button.dart';
+import 'package:chama_app/global_widgets/custom_input.dart';
 import 'package:chama_app/models/user.dart';
-import 'package:chama_app/screens/home_screen.dart';
-import 'package:chama_app/screens/register_screen.dart';
+import 'package:chama_app/modules/auth/screens/forgot_pass_screen.dart';
+import 'package:chama_app/modules/auth/screens/register_screen.dart';
+import 'package:chama_app/modules/home/screens/home_screen.dart';
 import 'package:chama_app/services/auth.dart';
-import 'package:chama_app/widgets/custom_button.dart';
-import 'package:chama_app/widgets/custom_input.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,15 +35,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    final isValid = _form.currentState.validate();
+    final isValid = _form.currentState!.validate();
     if (!isValid || _isLoading) return;
-    _form.currentState.save();
+    _form.currentState!.save();
     setState(() => _isLoading = true);
     try {
       User user =
           await Provider.of<Auth>(context, listen: false).login(_loginDto);
-      // scaffold.showSnackBar(SnackBar(content: Text('Welcome ${user.name}!')));
-      // Navigator.of(context).pushNamed(HomeScreen.routeName);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Welcome ${user.name}!')));
+      Navigator.of(context).pushNamed(HomeScreen.routeName);
     } catch (error) {
       print(error);
       showDialog(
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 title: Text('An error occurred'),
                 content: Text(error.toString()),
                 actions: [
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         // close the alert dialog
                         Navigator.of(ctx).pop();
@@ -61,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ));
     }
     setState(() => _isLoading = false);
-    Navigator.of(context).pop();
   }
 
   @override
@@ -94,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 24),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Theme.of(context).accentColor),
+                        color: Theme.of(context).colorScheme.secondary),
                     child: Form(
                       key: _form,
                       child: Column(
@@ -107,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   .requestFocus(_passwordFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter your phone number';
                               }
                               return null;
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             focusNode: _phoneFocusNode,
                             onSaved: (newValue) {
                               _loginDto = LoginDto(
-                                phone: newValue,
+                                phone: newValue!,
                                 password: _loginDto.password,
                               );
                             },
@@ -132,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   .requestFocus(_loginFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter your password';
                               }
                               return null;
@@ -141,17 +142,23 @@ class _LoginScreenState extends State<LoginScreen> {
                             onSaved: (newValue) {
                               _loginDto = LoginDto(
                                 phone: _loginDto.phone,
-                                password: newValue,
+                                password: newValue!,
                               );
                             },
                           ),
                           SizedBox(
                             height: 24,
                           ),
-                          Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(ForgotPassScreen.routeName);
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
                             ),
                           ),
                           SizedBox(

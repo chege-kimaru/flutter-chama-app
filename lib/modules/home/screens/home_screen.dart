@@ -1,4 +1,4 @@
-import 'package:chama_app/widgets/home_item.dart';
+import 'package:chama_app/modules/home/widgets/home_item.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {

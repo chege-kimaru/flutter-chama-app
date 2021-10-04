@@ -1,8 +1,7 @@
-import 'package:chama_app/models/user.dart';
-import 'package:chama_app/screens/login_screen.dart';
+import 'package:chama_app/modules/auth/screens/login_screen.dart';
 import 'package:chama_app/services/auth.dart';
-import 'package:chama_app/widgets/custom_button.dart';
-import 'package:chama_app/widgets/custom_input.dart';
+import 'package:chama_app/global_widgets/custom_button.dart';
+import 'package:chama_app/global_widgets/custom_input.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +20,7 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   final _verifyFocusNode = FocusNode();
   final _phoneController = TextEditingController();
 
-  VerifyPhoneDto _verifyPhoneDto = VerifyPhoneDto(phone: '', code: 0);
+  PhoneCodeDto _verifyPhoneDto = PhoneCodeDto(phone: '', code: 0);
 
   bool _isLoading = false;
 
@@ -37,28 +36,18 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   }
 
   Future<void> _verify() async {
-    final isValid = _form.currentState.validate();
+    final isValid = _form.currentState!.validate();
     if (!isValid || _isLoading) return;
-    _form.currentState.save();
+    _form.currentState!.save();
     setState(() => _isLoading = true);
     try {
       await Provider.of<Auth>(context, listen: false)
           .verifyPhone(_verifyPhoneDto);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text("Verification was successful"),
-                content: Text('Please login to continue.'),
-                actions: [
-                  FlatButton(
-                      onPressed: () {
-                        // close the alert dialog
-                        Navigator.of(ctx).pop();
-                      },
-                      child: Text('Okay'))
-                ],
-              ));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Verification was successful. Please login to continue.'),
+      ));
       Navigator.of(context).pushNamed(LoginScreen.routeName);
+      setState(() => _isLoading = false);
     } catch (error) {
       print(error);
       showDialog(
@@ -67,7 +56,7 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                 title: Text('An error occurred'),
                 content: Text(error.toString()),
                 actions: [
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         // close the alert dialog
                         Navigator.of(ctx).pop();
@@ -75,37 +64,28 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                       child: Text('Okay'))
                 ],
               ));
+      setState(() => _isLoading = false);
     }
-    setState(() => _isLoading = false);
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   Future<void> _resendVerification() async {
-    _form.currentState.validate();
+    _form.currentState!.validate();
     if (_phoneController.text.isEmpty || _isResendLoading) {
       // show snackbar
       return;
     }
     ;
-    _form.currentState.save();
+    _form.currentState!.save();
     setState(() => _isResendLoading = true);
     try {
       await Provider.of<Auth>(context, listen: false)
           .resendVerificationCode(_phoneController.text);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text("An SMS with a verification code has been sent."),
-                content: Text('Please enter the code below..'),
-                actions: [
-                  FlatButton(
-                      onPressed: () {
-                        // close the alert dialog
-                        Navigator.of(ctx).pop();
-                      },
-                      child: Text('Okay'))
-                ],
-              ));
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            'An SMS with a verification code has been sent. Please enter the code.'),
+      ));
     } catch (error) {
       print(error);
       showDialog(
@@ -114,7 +94,7 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                 title: Text('Failed to send verification failed.'),
                 content: Text(error.toString()),
                 actions: [
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         // close the alert dialog
                         Navigator.of(ctx).pop();
@@ -124,13 +104,13 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               ));
     }
     setState(() => _isResendLoading = false);
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    String phoneToVerify = Provider.of<Auth>(context).phoneToVerify;
-    _verifyPhoneDto = VerifyPhoneDto(phone: phoneToVerify, code: 0);
+    String phoneToVerify = Provider.of<Auth>(context).phoneToVerify ?? '';
+    _verifyPhoneDto = PhoneCodeDto(phone: phoneToVerify, code: 0);
     _phoneController.text = phoneToVerify;
 
     return Scaffold(
@@ -176,14 +156,14 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                                   .requestFocus(_codeFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter the code you have received.';
                               }
                               return null;
                             },
                             onSaved: (newValue) {
-                              _verifyPhoneDto = VerifyPhoneDto(
-                                phone: newValue,
+                              _verifyPhoneDto = PhoneCodeDto(
+                                phone: newValue!,
                                 code: _verifyPhoneDto.code,
                               );
                             },
@@ -201,15 +181,15 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                                   .requestFocus(_verifyFocusNode);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value!.isEmpty) {
                                 return 'Please enter the code you have received.';
                               }
                               return null;
                             },
                             onSaved: (newValue) {
-                              _verifyPhoneDto = VerifyPhoneDto(
+                              _verifyPhoneDto = PhoneCodeDto(
                                 phone: _verifyPhoneDto.phone,
-                                code: int.parse(newValue),
+                                code: int.parse(newValue!),
                               );
                             },
                             keyboardType: TextInputType.number,

@@ -6,13 +6,13 @@ import 'package:chama_app/utils/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-class VerifyPhoneDto {
+class PhoneCodeDto {
   final String phone;
   final int code;
 
-  VerifyPhoneDto({@required this.phone, @required this.code});
+  PhoneCodeDto({@required required this.phone, @required required this.code});
 
-  static Map<String, dynamic> toJson(VerifyPhoneDto dto) {
+  static Map<String, dynamic> toJson(PhoneCodeDto dto) {
     return {
       'phone': dto.phone,
       'code': dto.code,
@@ -24,7 +24,7 @@ class LoginDto {
   final String phone;
   final String password;
 
-  LoginDto({@required this.phone, @required this.password});
+  LoginDto({@required required this.phone, @required required this.password});
 
   static Map<String, dynamic> toJson(LoginDto dto) {
     return {
@@ -34,12 +34,31 @@ class LoginDto {
   }
 }
 
+class ResetPassDto {
+  final String phone;
+  final int code;
+  final String password;
+
+  ResetPassDto(
+      {@required required this.phone,
+      @required required this.code,
+      @required required this.password});
+
+  static Map<String, dynamic> toJson(ResetPassDto dto) {
+    return {
+      'phone': dto.phone,
+      'code': dto.code,
+      'password': dto.password,
+    };
+  }
+}
+
 class Auth extends ChangeNotifier {
-  String phoneToVerify;
+  String? phoneToVerify;
 
   Future<User> register(User user) async {
     try {
-      final url = "$BASE_URL/auth/register";
+      final url = Uri.parse("$BASE_URL/auth/register");
       final response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -61,14 +80,14 @@ class Auth extends ChangeNotifier {
     }
   }
 
-  Future<void> verifyPhone(VerifyPhoneDto dto) async {
+  Future<void> verifyPhone(PhoneCodeDto dto) async {
     try {
-      final url = "$BASE_URL/auth/verify";
+      final url = Uri.parse("$BASE_URL/auth/verify");
       final response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: json.encode(VerifyPhoneDto.toJson(dto)));
+          body: json.encode(PhoneCodeDto.toJson(dto)));
       final responseData = json.decode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -84,7 +103,7 @@ class Auth extends ChangeNotifier {
 
   Future<void> resendVerificationCode(String phone) async {
     try {
-      final url = "$BASE_URL/auth/verify/resend";
+      final url = Uri.parse("$BASE_URL/auth/verify/resend");
       final response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -95,7 +114,7 @@ class Auth extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // success
       } else {
-        throw apiErrorHandler('Verification failed', responseData['message']);
+        throw apiErrorHandler('Resend failed', responseData['message']);
       }
     } catch (error) {
       print(error);
@@ -105,7 +124,7 @@ class Auth extends ChangeNotifier {
 
   Future<User> login(LoginDto loginDto) async {
     try {
-      final url = "$BASE_URL/auth/login";
+      final url = Uri.parse("$BASE_URL/auth/login");
       final response = await http.post(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -119,7 +138,51 @@ class Auth extends ChangeNotifier {
         // save token
         return User.fromJson(responseData['user']);
       } else {
-        throw apiErrorHandler('Registration failed', responseData['message']);
+        throw apiErrorHandler('Login failed', responseData['message']);
+      }
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+  }
+
+  Future<void> forgotPass(String phone) async {
+    try {
+      final url = Uri.parse("$BASE_URL/auth/request-change-password");
+      final response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode({'phone': phone}));
+      final responseData = json.decode(response.body);
+      print(responseData);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // success
+      } else {
+        throw apiErrorHandler('Failed', responseData['message']);
+      }
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+  }
+
+  Future<void> resetPass(ResetPassDto dto) async {
+    try {
+      final url = Uri.parse("$BASE_URL/auth/change-password");
+      final response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(ResetPassDto.toJson(dto)));
+      final responseData = json.decode(response.body);
+      print(responseData);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // success
+      } else {
+        throw apiErrorHandler('Failed', responseData['message']);
       }
     } catch (error) {
       print(error);

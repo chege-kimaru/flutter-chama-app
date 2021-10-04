@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class HomeItem extends StatelessWidget {
   final String label;
   final IconData icon;
-  final Function handler;
+  final void Function()? handler;
 
-  const HomeItem({this.label, this.icon, this.handler});
+  const HomeItem({required this.label, required this.icon, this.handler});
 
   @override
   Widget build(BuildContext context) {
