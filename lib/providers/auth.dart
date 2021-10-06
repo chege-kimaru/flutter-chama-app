@@ -5,6 +5,7 @@ import 'package:chama_app/utils/api-error-handler.dart';
 import 'package:chama_app/utils/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PhoneCodeDto {
   final String phone;
@@ -55,6 +56,79 @@ class ResetPassDto {
 
 class Auth extends ChangeNotifier {
   String? phoneToVerify;
+
+  User? _user;
+  String? _token;
+
+  get user {
+    return this._user;
+  }
+
+  get token {
+    return this._token;
+  }
+
+  bool get isAuth {
+    return _token != null && _user != null;
+  }
+
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (!prefs.containsKey('user') || !prefs.containsKey('token')) return false;
+
+    this._user = User.fromJson(json.decode(prefs.getString('user') ?? '{}'));
+    this._token = prefs.getString('token');
+
+    notifyListeners();
+
+    return true;
+  }
+
+  Future<void> logout() async {
+    try {
+      this._user = null;
+      this._token = null;
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove('user');
+      prefs.remove('token');
+      // prefs.clear();
+      notifyListeners();
+    } catch (error) {
+      print('LOGGING OUT');
+      print(error);
+      throw error;
+    }
+  }
+
+  Future<User> login(LoginDto loginDto) async {
+    try {
+      final url = Uri.parse("$BASE_URL/auth/login");
+      final response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(LoginDto.toJson(loginDto)));
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // success
+        // save token
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('user', json.encode(responseData['user']));
+        prefs.setString('token', responseData['jwt'] as String);
+        this._user = User.fromJson(responseData['user']);
+        this._token = responseData['jwt'] as String;
+        notifyListeners();
+        return User.fromJson(responseData['user']);
+      } else {
+        throw apiErrorHandler('Login failed', responseData['message']);
+      }
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+  }
 
   Future<User> register(User user) async {
     try {
@@ -115,30 +189,6 @@ class Auth extends ChangeNotifier {
         // success
       } else {
         throw apiErrorHandler('Resend failed', responseData['message']);
-      }
-    } catch (error) {
-      print(error);
-      throw error;
-    }
-  }
-
-  Future<User> login(LoginDto loginDto) async {
-    try {
-      final url = Uri.parse("$BASE_URL/auth/login");
-      final response = await http.post(url,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: json.encode(LoginDto.toJson(loginDto)));
-      final responseData = json.decode(response.body);
-      print(responseData);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // success
-        // save token
-        return User.fromJson(responseData['user']);
-      } else {
-        throw apiErrorHandler('Login failed', responseData['message']);
       }
     } catch (error) {
       print(error);

@@ -31,6 +31,7 @@ dependencies:
   http: ^0.13.3
   shared_preferences: ^2.0.8
   intl: ^0.17.0
+  http_interceptor: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/profile.png
+    - assets/images/user_avatar.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

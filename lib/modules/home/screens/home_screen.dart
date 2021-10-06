@@ -1,11 +1,19 @@
+import 'package:chama_app/models/user.dart';
+import 'package:chama_app/modules/auth/screens/login_screen.dart';
+import 'package:chama_app/modules/group/screens/group_members_screen.dart';
+import 'package:chama_app/modules/group/screens/my_groups_screen.dart';
 import 'package:chama_app/modules/home/widgets/home_item.dart';
+import 'package:chama_app/providers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = 'home';
 
   @override
   Widget build(BuildContext context) {
+    User? _user = Provider.of<Auth>(context, listen: false).user;
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
@@ -24,7 +32,7 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hello, Lizzy!',
+                  'Hello, ${_user?.name ?? ''}!',
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontFamily: 'Mogra',
@@ -57,7 +65,8 @@ class HomeScreen extends StatelessWidget {
                   top: -60,
                   child: CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/images/profile.png'),
+                    backgroundImage:
+                        AssetImage('assets/images/user_avatar.jpg'),
                   ),
                 ),
               ],
@@ -88,10 +97,25 @@ class HomeScreen extends StatelessWidget {
                 HomeItem(
                     label: 'Reports', icon: Icons.text_snippet, handler: () {}),
                 HomeItem(
-                    label: 'Join Group', icon: Icons.group_add, handler: () {}),
-                HomeItem(label: 'New Group', icon: Icons.group, handler: () {}),
+                    label: 'Members',
+                    icon: Icons.people,
+                    handler: () {
+                      Navigator.of(context)
+                          .pushNamed(GroupMembersScreen.routeName);
+                    }),
                 HomeItem(
-                    label: 'Settings', icon: Icons.settings, handler: () {}),
+                    label: 'My Groups',
+                    icon: Icons.groups,
+                    handler: () {
+                      Navigator.of(context).pushNamed(MyGroupsScreen.routeName);
+                    }),
+                HomeItem(
+                    label: 'Settings',
+                    icon: Icons.settings,
+                    handler: () {
+                      Provider.of<Auth>(context, listen: false).logout();
+                      Navigator.of(context).pushNamed(LoginScreen.routeName);
+                    }),
               ],
             ),
           ),

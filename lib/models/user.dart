@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class User {
+  final String? id;
   final String? name;
   final String? email;
   final String? phone;
@@ -9,6 +10,7 @@ class User {
   final DateTime? updatedAt;
 
   User({
+    this.id,
     @required this.name,
     @required this.email,
     @required this.phone,
@@ -19,6 +21,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['id'],
       name: json['name'],
       email: json['email'],
       phone: json['phone'],

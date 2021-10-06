@@ -1,46 +1,48 @@
 import 'package:chama_app/global_widgets/custom_button.dart';
 import 'package:chama_app/global_widgets/custom_input.dart';
-import 'package:chama_app/modules/auth/screens/login_screen.dart';
-import 'package:chama_app/modules/auth/screens/reset_pass_screen.dart';
-import 'package:chama_app/providers/auth.dart';
+import 'package:chama_app/models/group.dart';
+import 'package:chama_app/modules/group/screens/my_groups_screen.dart';
+import 'package:chama_app/providers/groups.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ForgotPassScreen extends StatefulWidget {
-  static const routeName = '/forgot-pass';
+class CreateGroupScreen extends StatefulWidget {
+  static const routeName = '/create-group';
+
+  const CreateGroupScreen({Key? key}) : super(key: key);
 
   @override
-  _ForgotPassState createState() => _ForgotPassState();
+  _CreateGroupScreenState createState() => _CreateGroupScreenState();
 }
 
-class _ForgotPassState extends State<ForgotPassScreen> {
+class _CreateGroupScreenState extends State<CreateGroupScreen> {
   final _form = GlobalKey<FormState>();
 
-  final _phoneFocusNode = FocusNode();
-  final _sendCodeFocusNode = FocusNode();
+  final _nameFocusNode = FocusNode();
+  final _createGroupFocusNode = FocusNode();
 
-  String _phone = '';
+  CreateGroupDto _createGroupDto = CreateGroupDto('');
 
   bool _isLoading = false;
 
   @override
   void dispose() {
-    _phoneFocusNode.dispose();
-    _sendCodeFocusNode.dispose();
+    _nameFocusNode.dispose();
+    _createGroupFocusNode.dispose();
     super.dispose();
   }
 
-  Future<void> _forgotPass() async {
+  Future<void> _createGroup() async {
     final isValid = _form.currentState!.validate();
     if (!isValid || _isLoading) return;
     _form.currentState!.save();
     setState(() => _isLoading = true);
     try {
-      await Provider.of<Auth>(context, listen: false).forgotPass(_phone);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              'A code has been sent. Enter the code above to reset your password.')));
-      Navigator.of(context).pushNamed(ResetPassScreen.routeName);
+      Group group = await Provider.of<Groups>(context, listen: false)
+          .createGroup(_createGroupDto);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Successfully created ${group.name}!')));
+      Navigator.of(context).pushNamed(MyGroupsScreen.routeName);
     } catch (error) {
       print(error);
       showDialog(
@@ -59,7 +61,6 @@ class _ForgotPassState extends State<ForgotPassScreen> {
               ));
     }
     setState(() => _isLoading = false);
-    // Navigator.of(context).pop();
   }
 
   @override
@@ -76,12 +77,27 @@ class _ForgotPassState extends State<ForgotPassScreen> {
                 // mainAxisSize: MainAxisSize.min,
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Forgot Password',
-                    style: TextStyle(
-                        fontFamily: 'ModernAntiqua',
-                        fontSize: 32,
-                        color: Colors.white),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Icon(
+                            Icons.chevron_left,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 48),
+                        Text(
+                          'Create Group',
+                          style: TextStyle(
+                              fontFamily: 'ModernAntiqua',
+                              fontSize: 24,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 24,
@@ -98,63 +114,34 @@ class _ForgotPassState extends State<ForgotPassScreen> {
                       child: Column(
                         children: [
                           CustomInput(
-                            hintText: 'Phone Number',
-                            textInputAction: TextInputAction.done,
+                            hintText: 'Name',
+                            textInputAction: TextInputAction.next,
                             onFieldSubmitted: (_) {
                               FocusScope.of(context)
-                                  .requestFocus(_sendCodeFocusNode);
+                                  .requestFocus(_createGroupFocusNode);
                             },
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter your phone number';
+                                return 'Please enter group name';
                               }
                               return null;
                             },
-                            focusNode: _phoneFocusNode,
+                            focusNode: _nameFocusNode,
                             onSaved: (newValue) {
-                              setState(() {
-                                _phone = newValue!;
-                              });
+                              _createGroupDto = CreateGroupDto(newValue ?? '');
                             },
                           ),
                           SizedBox(
                             height: 24,
                           ),
                           CustomButton(
-                            label: 'Send Code',
-                            handler: _forgotPass,
-                            focusNode: this._sendCodeFocusNode,
+                            label: 'Create Group',
+                            handler: _createGroup,
+                            focusNode: this._createGroupFocusNode,
                             loading: _isLoading,
                           ),
                           SizedBox(
                             height: 24,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed(ResetPassScreen.routeName);
-                            },
-                            child: Text(
-                              'Reset Password',
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed(LoginScreen.routeName);
-                            },
-                            child: Text(
-                              'Back to Sign In',
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
                           ),
                         ],
                       ),

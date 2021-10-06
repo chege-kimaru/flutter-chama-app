@@ -3,8 +3,8 @@ import 'package:chama_app/global_widgets/custom_input.dart';
 import 'package:chama_app/models/user.dart';
 import 'package:chama_app/modules/auth/screens/forgot_pass_screen.dart';
 import 'package:chama_app/modules/auth/screens/register_screen.dart';
-import 'package:chama_app/modules/home/screens/home_screen.dart';
-import 'package:chama_app/services/auth.dart';
+import 'package:chama_app/modules/group/screens/my_groups_screen.dart';
+import 'package:chama_app/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await Provider.of<Auth>(context, listen: false).login(_loginDto);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Welcome ${user.name}!')));
-      Navigator.of(context).pushNamed(HomeScreen.routeName);
+      Navigator.of(context).pushNamed(MyGroupsScreen.routeName);
     } catch (error) {
       print(error);
       showDialog(

@@ -1,7 +1,7 @@
 import 'package:chama_app/models/user.dart';
 import 'package:chama_app/modules/auth/screens/login_screen.dart';
 import 'package:chama_app/modules/auth/screens/verify_phone_screen.dart';
-import 'package:chama_app/services/auth.dart';
+import 'package:chama_app/providers/auth.dart';
 import 'package:chama_app/global_widgets/custom_button.dart';
 import 'package:chama_app/global_widgets/custom_input.dart';
 import 'package:flutter/material.dart';

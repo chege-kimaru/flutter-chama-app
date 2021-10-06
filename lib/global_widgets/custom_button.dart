@@ -5,12 +5,16 @@ class CustomButton extends StatelessWidget {
   final void Function() handler;
   final FocusNode? focusNode;
   final bool loading;
+  final Color? backgroundColor;
+  final Color? labelColor;
 
   const CustomButton(
       {@required required this.label,
       @required required this.handler,
       this.focusNode,
-      this.loading = false});
+      this.loading = false,
+      this.backgroundColor,
+      this.labelColor});
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +36,14 @@ class CustomButton extends StatelessWidget {
             shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(18.0),
             ),
-            backgroundColor: Theme.of(context).primaryColor),
+            backgroundColor:
+                this.backgroundColor ?? Theme.of(context).primaryColor),
         child: loading
             ? CircularProgressIndicator()
             : Text(
                 this.label,
                 style: TextStyle(
-                  color: Theme.of(context).accentColor,
+                  color: this.labelColor ?? Theme.of(context).accentColor,
                   fontSize: 18,
                 ),
               ),
