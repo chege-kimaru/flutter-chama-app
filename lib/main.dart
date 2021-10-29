@@ -8,8 +8,10 @@ import 'package:chama_app/modules/auth/screens/login_screen.dart';
 import 'package:chama_app/modules/auth/screens/register_screen.dart';
 import 'package:chama_app/modules/auth/screens/reset_pass_screen.dart';
 import 'package:chama_app/modules/auth/screens/verify_phone_screen.dart';
+import 'package:chama_app/modules/saving/screens/savings_screen.dart';
 import 'package:chama_app/providers/auth.dart';
 import 'package:chama_app/providers/groups.dart';
+import 'package:chama_app/providers/savings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,13 +27,29 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => CurrentGroupProvider(),
+        ),
+        ChangeNotifierProxyProvider<Auth, CurrentGroupProvider>(
+          update: (ctx, auth, groups) =>
+              CurrentGroupProvider(authToken: auth.token),
+          create: (ctx) => CurrentGroupProvider(),
+        ),
         ChangeNotifierProxyProvider<Auth, Groups>(
           update: (ctx, auth, groups) => Groups(authToken: auth.token),
           create: (ctx) => Groups(),
         ),
+        ChangeNotifierProxyProvider<CurrentGroupProvider, Savings>(
+          update: (ctx, currentGroupProvider, savings) => Savings(
+            authToken: currentGroupProvider.authToken,
+            currentGroupId: currentGroupProvider.currentGroup?.id,
+            currentGroup: currentGroupProvider.currentGroup,
+          ),
+          create: (ctx) => Savings(),
+        ),
       ],
-      child: Consumer<Auth>(
-        builder: (ctx, auth, _) => MaterialApp(
+      child: Consumer2<Auth, CurrentGroupProvider>(
+        builder: (ctx, auth, currentGroupProvider, _) => MaterialApp(
             title: 'Chama',
             theme: ThemeData(
               primaryColor: Color.fromRGBO(71, 33, 153, 1),
@@ -43,15 +61,30 @@ class MyApp extends StatelessWidget {
             ),
             // initialRoute: '/',
             home: auth.isAuth
-                ? MyGroupsScreen()
+                ? currentGroupProvider.currentGroup != null
+                    ? HomeScreen()
+                    : FutureBuilder(
+                        future: currentGroupProvider.tryAutoSetCurrentGroup(),
+                        builder: (ctx, groupsResultSnapshot) =>
+                            groupsResultSnapshot.connectionState ==
+                                    ConnectionState.waiting
+                                // ? SplashScreen()
+                                ? Scaffold(
+                                    body: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
+                                : MyGroupsScreen())
                 : FutureBuilder(
                     future: auth.tryAutoLogin(),
                     builder: (ctx, authResultSnapshot) =>
                         authResultSnapshot.connectionState ==
                                 ConnectionState.waiting
                             // ? SplashScreen()
-                            ? Center(
-                                child: CircularProgressIndicator(),
+                            ? Scaffold(
+                                body: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
                               )
                             : LoginScreen()),
             routes: {
@@ -68,6 +101,8 @@ class MyApp extends StatelessWidget {
               CreateGroupScreen.routeName: (ctx) => CreateGroupScreen(),
               JoinGroupScreen.routeName: (ctx) => JoinGroupScreen(),
               GroupMembersScreen.routeName: (ctx) => GroupMembersScreen(),
+              //Savings
+              SavingsScreen.routeName: (ctx) => SavingsScreen()
             }),
       ),
     );

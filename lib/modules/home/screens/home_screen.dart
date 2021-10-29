@@ -3,6 +3,7 @@ import 'package:chama_app/modules/auth/screens/login_screen.dart';
 import 'package:chama_app/modules/group/screens/group_members_screen.dart';
 import 'package:chama_app/modules/group/screens/my_groups_screen.dart';
 import 'package:chama_app/modules/home/widgets/home_item.dart';
+import 'package:chama_app/modules/saving/screens/savings_screen.dart';
 import 'package:chama_app/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +83,11 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(25),
               children: [
                 HomeItem(
-                    label: 'Savings', icon: Icons.credit_card, handler: () {}),
+                    label: 'Savings',
+                    icon: Icons.credit_card,
+                    handler: () {
+                      Navigator.of(context).pushNamed(SavingsScreen.routeName);
+                    }),
                 HomeItem(
                     label: 'Projects', icon: Icons.bar_chart, handler: () {}),
                 HomeItem(

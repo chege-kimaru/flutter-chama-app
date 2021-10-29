@@ -14,8 +14,9 @@ class UsergroupItem extends StatelessWidget {
     return InkWell(
       onTap: this.groupMember.verified!
           ? () {
-              Provider.of<Groups>(context, listen: false).currentGroup =
-                  this.groupMember.group!;
+              Provider.of<CurrentGroupProvider>(context, listen: false)
+                  .setCurrentGroup(this.groupMember.group!);
+
               Navigator.of(context).pushNamed(HomeScreen.routeName);
             }
           : () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(

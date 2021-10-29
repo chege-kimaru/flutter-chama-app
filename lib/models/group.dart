@@ -16,19 +16,26 @@ class Group {
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {
+    print('converting to object');
     return Group(
       id: json['id'],
       adminId: json['adminId'],
+      // code: int.parse(json['code']),
       code: json['code'],
       name: json['name'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      // createdAt: DateTime.parse(json['createdAt']),
+      // updatedAt: DateTime.parse(json['updatedAt']),
     );
   }
 
   static Map<String, dynamic> toJson(Group group) {
     return {
+      'id': group.id,
+      'adminId': group.adminId,
       'name': group.name,
+      'code': group.code,
+      // 'createdAt': group.createdAt,
+      // 'updatedAt': group.updatedAt,
     };
   }
 }

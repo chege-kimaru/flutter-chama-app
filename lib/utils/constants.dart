@@ -1,1 +1,1 @@
-const BASE_URL = 'https://0a33-105-163-45-217.ngrok.io';
+const BASE_URL = 'https://pretty-cow-26.loca.lt';

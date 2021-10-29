@@ -6,6 +6,7 @@ import 'package:chama_app/utils/api-error-handler.dart';
 import 'package:chama_app/utils/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateGroupDto {
   final String name;
@@ -16,6 +17,86 @@ class CreateGroupDto {
     return {
       'name': dto.name,
     };
+  }
+}
+
+class CurrentGroupProvider extends ChangeNotifier {
+  final String? authToken;
+
+  CurrentGroupProvider({this.authToken});
+
+  Group? _currentGroup;
+
+  get currentGroup {
+    return _currentGroup;
+  }
+
+  setCurrentGroup(Group? group) async {
+    print('============================in setCurrentGroup');
+
+    this._currentGroup = group;
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('group', json.encode(Group.toJson(_currentGroup!)));
+
+    print('==========Group ${prefs.getString('group')}');
+
+    notifyListeners();
+  }
+
+  Future<bool> tryAutoSetCurrentGroup() async {
+    print('============================in tryAutoSetCurrentGroup');
+
+    final prefs = await SharedPreferences.getInstance();
+
+    if (!prefs.containsKey('group')) return false;
+
+    print(
+        '============================in tryAutoSetCurrentGroup: not returning false');
+
+    print(prefs.getString('group'));
+    print(json.decode(prefs.getString('group') ?? '{}'));
+    print(Group.fromJson(json.decode(prefs.getString('group') ?? '{}')));
+
+    _currentGroup =
+        Group.fromJson(json.decode(prefs.getString('group') ?? '{}'));
+
+    print('AFter setting current group');
+
+    notifyListeners();
+
+    print(_currentGroup);
+
+    // fetch latest group details from server
+    // getGroupDetails().then((group) {
+    //   setCurrentGroup(group);
+    // });
+
+    return true;
+  }
+
+  Future<Group> getGroupDetails() async {
+    try {
+      final url = Uri.parse("$BASE_URL/groups/${this._currentGroup!.id!}");
+      final response = await http.get(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${this.authToken}'
+        },
+      );
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Group.fromJson(responseData);
+      } else {
+        throw apiErrorHandler(
+            'Could not load group details', responseData['message']);
+      }
+    } catch (error) {
+      print(error);
+      throw error;
+    }
   }
 }
 
@@ -39,11 +120,6 @@ class Groups extends ChangeNotifier {
     return _currentGroup;
   }
 
-  set currentGroup(Group? group) {
-    this._currentGroup = group;
-    notifyListeners();
-  }
-
   List<GroupMember> get verifiedGroupMemberships {
     return [..._verifiedGroupMemberships];
   }
@@ -51,6 +127,40 @@ class Groups extends ChangeNotifier {
   List<GroupMember> get unverifiedGroupMemberships {
     return [..._unverifiedGroupMemberships];
   }
+
+  // setCurrentGroup(Group? group) async {
+  //   print('============================in setCurrentGroup');
+
+  //   this._currentGroup = group;
+
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setString('group', json.encode(_currentGroup));
+
+  //   notifyListeners();
+  // }
+
+  // Future<bool> tryAutoSetCurrentGroup() async {
+  //   print('============================in tryAutoSetCurrentGroup');
+
+  //   final prefs = await SharedPreferences.getInstance();
+
+  //   if (!prefs.containsKey('group')) return false;
+
+  //   print(
+  //       '============================in tryAutoSetCurrentGroup: not returning false');
+
+  //   this._currentGroup =
+  //       Group.fromJson(json.decode(prefs.getString('group') ?? '{}'));
+
+  //   // fetch latest group details from server
+  //   getGroupDetails(this.currentGroup!.id!).then((group) {
+  //     setCurrentGroup(group);
+  //   });
+
+  //   notifyListeners();
+
+  //   return true;
+  // }
 
   Future<Group> createGroup(CreateGroupDto dto) async {
     try {
@@ -75,6 +185,30 @@ class Groups extends ChangeNotifier {
     }
   }
 
+  // Future<Group> getGroupDetails(String groupId) async {
+  //   try {
+  //     final url = Uri.parse("$BASE_URL/groups/$groupId");
+  //     final response = await http.get(
+  //       url,
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //         'Authorization': 'Bearer ${this.authToken}'
+  //       },
+  //     );
+  //     final responseData = json.decode(response.body);
+
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       return Group.fromJson(responseData);
+  //     } else {
+  //       throw apiErrorHandler(
+  //           'Could not load group details', responseData['message']);
+  //     }
+  //   } catch (error) {
+  //     print(error);
+  //     throw error;
+  //   }
+  // }
+
   Future<void> getUserGroups() async {
     try {
       final url = Uri.parse("$BASE_URL/groups/user");
@@ -86,15 +220,11 @@ class Groups extends ChangeNotifier {
         },
       );
       final responseData = json.decode(response.body);
-      // print(responseData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         List<dynamic> rawUserGroupMemberships = List.from(responseData);
-        print(rawUserGroupMemberships);
         List<GroupMember> userGroupMemberships = [];
         for (dynamic membership in rawUserGroupMemberships) {
-          print('MEMBERSHIP');
-          print(membership);
           userGroupMemberships.add(GroupMember.fromJson(membership));
         }
         this._userGroupMemberships = userGroupMemberships;
