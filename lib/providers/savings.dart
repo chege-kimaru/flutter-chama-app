@@ -7,8 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:provider/provider.dart';
-
 class Savings extends ChangeNotifier {
   final String? authToken;
   final String? currentGroupId;
