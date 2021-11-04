@@ -12,10 +12,12 @@ class GroupMembersScreen extends StatelessWidget {
   static const routeName = '/group-members';
 
   Future<void> _refreshVerifiedGroupMemberships(context) async {
+    print('=======refreshing group members 1====');
     await Provider.of<Groups>(context, listen: false).getVerifiedGroupMembers();
   }
 
   Future<void> _refreshUnverifiedGroupMemberships(context) async {
+    print('=======refreshing group members 2====');
     await Provider.of<Groups>(context, listen: false)
         .getUnVerifiedGroupMembers();
   }

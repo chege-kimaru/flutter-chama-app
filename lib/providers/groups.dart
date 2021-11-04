@@ -77,7 +77,7 @@ class CurrentGroupProvider extends ChangeNotifier {
 
   Future<Group> getGroupDetails() async {
     try {
-      final url = Uri.parse("$BASE_URL/groups/${this._currentGroup!.id!}");
+      final url = Uri.parse("$BASE_URL/groups/${this.currentGroup!.id!}");
       final response = await http.get(
         url,
         headers: <String, String>{
@@ -102,22 +102,17 @@ class CurrentGroupProvider extends ChangeNotifier {
 
 class Groups extends ChangeNotifier {
   final String? authToken;
+  final Group? currentGroup;
 
-  Groups({this.authToken});
+  Groups({this.authToken, this.currentGroup});
 
   List<GroupMember> _userGroupMemberships = [];
-
-  Group? _currentGroup;
 
   List<GroupMember> _verifiedGroupMemberships = [];
   List<GroupMember> _unverifiedGroupMemberships = [];
 
   List<GroupMember> get userGroupMemberships {
     return [..._userGroupMemberships];
-  }
-
-  Group? get currentGroup {
-    return _currentGroup;
   }
 
   List<GroupMember> get verifiedGroupMemberships {
@@ -131,10 +126,10 @@ class Groups extends ChangeNotifier {
   // setCurrentGroup(Group? group) async {
   //   print('============================in setCurrentGroup');
 
-  //   this._currentGroup = group;
+  //   this.currentGroup = group;
 
   //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.setString('group', json.encode(_currentGroup));
+  //   prefs.setString('group', json.encode(currentGroup));
 
   //   notifyListeners();
   // }
@@ -149,7 +144,7 @@ class Groups extends ChangeNotifier {
   //   print(
   //       '============================in tryAutoSetCurrentGroup: not returning false');
 
-  //   this._currentGroup =
+  //   this.currentGroup =
   //       Group.fromJson(json.decode(prefs.getString('group') ?? '{}'));
 
   //   // fetch latest group details from server
@@ -297,7 +292,7 @@ class Groups extends ChangeNotifier {
   Future<void> verifyGroupMember(String userId, bool verified) async {
     try {
       final url = Uri.parse(
-          "$BASE_URL/groups/${_currentGroup?.id}/members/$userId/verify");
+          "$BASE_URL/groups/${currentGroup?.id}/members/$userId/verify");
       final response = await http.patch(url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -321,8 +316,8 @@ class Groups extends ChangeNotifier {
   Future<List<GroupMember>> getGroupMembers(bool verified) async {
     try {
       print('CURRENT GROUP');
-      print(_currentGroup);
-      final url = Uri.parse("$BASE_URL/groups/${_currentGroup!.id}/members")
+      print(currentGroup);
+      final url = Uri.parse("$BASE_URL/groups/${currentGroup!.id}/members")
           .replace(queryParameters: {'verified': verified ? 'true' : 'false'});
       final response = await http.get(
         url,

@@ -3,6 +3,7 @@ import 'package:chama_app/modules/auth/screens/login_screen.dart';
 import 'package:chama_app/modules/group/screens/group_members_screen.dart';
 import 'package:chama_app/modules/group/screens/my_groups_screen.dart';
 import 'package:chama_app/modules/home/widgets/home_item.dart';
+import 'package:chama_app/modules/loan/screens/loans_screen.dart';
 import 'package:chama_app/modules/saving/screens/savings_screen.dart';
 import 'package:chama_app/providers/auth.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +99,12 @@ class HomeScreen extends StatelessWidget {
                     label: 'Wallet',
                     icon: Icons.account_balance_wallet,
                     handler: () {}),
-                HomeItem(label: 'Loans', icon: Icons.storage, handler: () {}),
+                HomeItem(
+                    label: 'Loans',
+                    icon: Icons.storage,
+                    handler: () {
+                      Navigator.of(context).pushNamed(LoansScreen.routeName);
+                    }),
                 HomeItem(
                     label: 'Reports', icon: Icons.text_snippet, handler: () {}),
                 HomeItem(

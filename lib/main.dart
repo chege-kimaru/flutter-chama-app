@@ -8,9 +8,11 @@ import 'package:chama_app/modules/auth/screens/login_screen.dart';
 import 'package:chama_app/modules/auth/screens/register_screen.dart';
 import 'package:chama_app/modules/auth/screens/reset_pass_screen.dart';
 import 'package:chama_app/modules/auth/screens/verify_phone_screen.dart';
+import 'package:chama_app/modules/loan/screens/loans_screen.dart';
 import 'package:chama_app/modules/saving/screens/savings_screen.dart';
 import 'package:chama_app/providers/auth.dart';
 import 'package:chama_app/providers/groups.dart';
+import 'package:chama_app/providers/loans.dart';
 import 'package:chama_app/providers/savings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,8 +37,11 @@ class MyApp extends StatelessWidget {
               CurrentGroupProvider(authToken: auth.token),
           create: (ctx) => CurrentGroupProvider(),
         ),
-        ChangeNotifierProxyProvider<Auth, Groups>(
-          update: (ctx, auth, groups) => Groups(authToken: auth.token),
+        ChangeNotifierProxyProvider<CurrentGroupProvider, Groups>(
+          update: (ctx, currentGroupProvider, groups) => Groups(
+            authToken: currentGroupProvider.authToken,
+            currentGroup: currentGroupProvider.currentGroup,
+          ),
           create: (ctx) => Groups(),
         ),
         ChangeNotifierProxyProvider<CurrentGroupProvider, Savings>(
@@ -46,6 +51,14 @@ class MyApp extends StatelessWidget {
             currentGroup: currentGroupProvider.currentGroup,
           ),
           create: (ctx) => Savings(),
+        ),
+        ChangeNotifierProxyProvider<CurrentGroupProvider, Loans>(
+          update: (ctx, currentGroupProvider, loans) => Loans(
+            authToken: currentGroupProvider.authToken,
+            currentGroupId: currentGroupProvider.currentGroup?.id,
+            currentGroup: currentGroupProvider.currentGroup,
+          ),
+          create: (ctx) => Loans(),
         ),
       ],
       child: Consumer2<Auth, CurrentGroupProvider>(
@@ -102,7 +115,8 @@ class MyApp extends StatelessWidget {
               JoinGroupScreen.routeName: (ctx) => JoinGroupScreen(),
               GroupMembersScreen.routeName: (ctx) => GroupMembersScreen(),
               //Savings
-              SavingsScreen.routeName: (ctx) => SavingsScreen()
+              SavingsScreen.routeName: (ctx) => SavingsScreen(),
+              LoansScreen.routeName: (ctx) => LoansScreen(),
             }),
       ),
     );
